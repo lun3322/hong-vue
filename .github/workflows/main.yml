@@ -24,8 +24,6 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
-      - run: yarn -v
-      - uses: bahmutov/npm-install@v1
 
       - name: Docker Login
         uses: docker/login-action@v1.10.0
@@ -34,7 +32,12 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
 
+      - run: yarn -v
+
+      - uses: bahmutov/npm-install@v1
+
       - name: Docker push
         run: |
+          yarn build
           docker build -t registry.cn-beijing.aliyuncs.com/lun3322/hong-vue:${{ github.run_id }} .
           docker push registry.cn-beijing.aliyuncs.com/lun3322/hong-vue:${{ github.run_id }}
