@@ -39,5 +39,5 @@ jobs:
       - name: Docker push
         run: |
           yarn build
-          docker build -t registry.cn-beijing.aliyuncs.com/lun3322/hong-vue:${{ github.run_id }} .
-          docker push registry.cn-beijing.aliyuncs.com/lun3322/hong-vue:${{ github.run_id }}
+          docker build -t registry.cn-beijing.aliyuncs.com/lun3322/hong-vue:${{ github.run_number }} .
+          docker push registry.cn-beijing.aliyuncs.com/lun3322/hong-vue:${{ github.run_number }}
