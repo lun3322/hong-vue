@@ -6,7 +6,7 @@
       </a>
     </div>
     <div class="copyright">
-      Copyright<a-icon type="copyright" />{{copyright}}
+      Copyright<a-icon type="copyright" />{{copyright}} - {{version}}
     </div>
   </div>
 </template>
@@ -14,7 +14,12 @@
 <script>
 export default {
   name: 'PageFooter',
-  props: ['copyright', 'linkList']
+  props: ['copyright', 'linkList'],
+  data(){
+    return{
+      version: process.env.VUE_APP_VERSION
+    }
+  }
 }
 </script>
 
