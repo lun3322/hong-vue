@@ -44,14 +44,31 @@ jobs:
         if: ${{ contains(github.ref, 'refs/tags/v') }}
         run: |
           VUE_APP_VERSION=${{ env.GIT_BRANCH_NAME }}-${{ github.sha }} yarn build
-          docker build -t ${{ secrets.VUE_IMAGE }}:${{ github.run_number }} .
-          docker push ${{ secrets.VUE_IMAGE }}:${{ github.run_number }}
+          docker build -t ${{ secrets.VUE_IMAGE }}:${{ env.GIT_BRANCH_NAME }} .
+          docker push ${{ secrets.VUE_IMAGE }}:${{ env.GIT_BRANCH_NAME }}
 
       - name: Deploy to prod
         uses: garygrossgarten/github-action-ssh@release
         if: ${{ contains(github.ref, 'refs/tags/v') }}
         with:
-          command: kubectl -n hong set image deploy hong-vue hong-vue=${{ secrets.VUE_IMAGE }}:${{ github.run_number }}
+          command: kubectl -n hong set image deploy hong-vue hong-vue=${{ secrets.VUE_IMAGE }}:${{ env.GIT_BRANCH_NAME }}
+          host: ${{ secrets.SERVER_HOST }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USER }}
+          privateKey: ${{ secrets.SERVER_PRIVATE_KEY}}
+
+      - name: Docker push test
+        if: ${{ contains(github.ref, 'refs/heads/develop') }}
+        run: |
+          VUE_APP_VERSION=${{ env.GIT_BRANCH_NAME }}-${{ github.sha }} yarn build
+          docker build -t ${{ secrets.VUE_IMAGE }}:dev${{ github.run_number }} .
+          docker push ${{ secrets.VUE_IMAGE }}:dev${{ github.run_number }}
+
+      - name: Deploy to test
+        uses: garygrossgarten/github-action-ssh@release
+        if: ${{ contains(github.ref, 'refs/heads/develop') }}
+        with:
+          command: kubectl -n hong set image deploy test-hong-vue hong-vue=${{ secrets.VUE_IMAGE }}:dev${{ github.run_number }}
           host: ${{ secrets.SERVER_HOST }}
           port: ${{ secrets.SERVER_PORT }}
           username: ${{ secrets.SERVER_USER }}
