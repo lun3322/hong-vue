@@ -41,3 +41,12 @@ jobs:
           VUE_APP_VERSION=${{ github.run_number }} yarn build
           docker build -t ${{ secrets.VUE_IMAGE }}:${{ github.run_number }} .
           docker push ${{ secrets.VUE_IMAGE }}:${{ github.run_number }}
+
+      - name: Deploy to host
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: kubectl -n hong set image deploy hong-vue hong-vue=${{ secrets.VUE_IMAGE }}:${{ github.run_number }}
+          host: ${{ secrets.SERVER_HOST }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USER }}
+          privateKey: ${{ secrets.SERVER_PRIVATE_KEY}}
