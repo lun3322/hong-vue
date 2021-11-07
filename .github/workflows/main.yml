@@ -60,7 +60,7 @@ jobs:
       - name: Docker push test
         if: ${{ contains(github.ref, 'refs/heads/develop') }}
         run: |
-          VUE_APP_VERSION=${{ env.GIT_BRANCH_NAME }}-${{ github.sha }} yarn build
+          VUE_APP_VERSION=dev${{ github.run_number }}-${{ github.sha }} yarn build
           docker build -t ${{ secrets.VUE_IMAGE }}:dev${{ github.run_number }} .
           docker push ${{ secrets.VUE_IMAGE }}:dev${{ github.run_number }}
 
