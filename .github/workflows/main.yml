@@ -68,7 +68,7 @@ jobs:
         uses: garygrossgarten/github-action-ssh@release
         if: ${{ contains(github.ref, 'refs/heads/develop') }}
         with:
-          command: kubectl -n hong set image deploy test-hong-vue hong-vue=${{ secrets.VUE_IMAGE }}:dev${{ github.run_number }}
+          command: helm upgrade --create-namespace -n hong-test --set image.tagVue=dev${{ github.run_number }} hong /root/hong-deploy/hong
           host: ${{ secrets.SERVER_HOST }}
           port: ${{ secrets.SERVER_PORT }}
           username: ${{ secrets.SERVER_USER }}
